@@ -81,8 +81,8 @@ def scan():
     label = Label(fr)
     label.pack()
 
-    button = Button(top, text="Take Picture!", bg="black", fg="white", borderwidth=10, anchor=S,
-                    command=lambda: n=FaceRec.faceMatch())  #se der erro, apagamos o "n=" e o "labelnome"
+    # button = Button(top, text="Take Picture!", bg="black", fg="white", borderwidth=10, anchor=S,
+                    # command=lambda: n=FaceRec.faceMatch())  #se der erro, apagamos o "n=" e o "labelnome"
     button.pack(anchor=S)
 
     button = Button(top, text="Quit", bg="black", fg="white", borderwidth=10, anchor=S,
