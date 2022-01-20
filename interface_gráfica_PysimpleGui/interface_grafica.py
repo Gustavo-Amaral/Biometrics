@@ -195,7 +195,7 @@ while True:
                 nome = TelaEntrar.values['nome'].upper()
                 window, cap = sg.Window('Foto', [[sg.Image(filename='', key='image')], ], location=(0, 0), grab_anywhere=True), cv2.VideoCapture(0)
                 s_out = False
-               
+                t0 = time.time() ##### LINHA Nº1
                 while (window(timeout=20)[0] != sg.WIN_CLOSED) and (s_out == False):
                    
                     window['image'](data=cv2.imencode('.png', cv2.flip(cap.read()[1],1))[1].tobytes())
@@ -203,26 +203,33 @@ while True:
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                     faces = detector(gray)
             
-            
+                    
   #####################################  EMOTION DETECTOR ALGORITHM  ############################################## 
-                   
-  # CODIGO LENTO, PROCURAR SOLUÇÃO PARA QUE ESTA PARTE DO CÓDIGO NAO FIQUE CORRENDO CONSTANTEMENTE #
-            
-                    detect = FER(mtcnn=True)
-                    emotions = detect.detect_emotions(frame)
-                    # print(detect.detect_emotions(frame))
-                    if(emotions[0]["emotions"]["fear"] >= 0.35):
-                        print("Subject maybe under threat - Warning For Emergency situation!")
-                    elif(emotions[0]["emotions"]["angry"] >= 0.35):
-                        print("Subject possibly highly stressed - You should relax!")
-                    else:
-                        print("Subject not under threat!")
+                    if ((time.time()-t0) > 5): ##### LINHA Nº2
+                      
+   # CODIGO LENTO, PROCURAR SOLUÇÃO PARA QUE ESTA PARTE DO CÓDIGO NAO FIQUE CORRENDO CONSTANTEMENTE #
+                    
+                         detect = FER(mtcnn=True)
+                         emotions = detect.detect_emotions(frame)
+                         # print(detect.detect_emotions(frame))
+                         if(emotions[0]["emotions"]["fear"] >= 0.35):
+                             print("Subject maybe under threat - Warning For Emergency situation!")
+                         elif(emotions[0]["emotions"]["angry"] >= 0.35):
+                             print("Subject possibly highly stressed - You should relax!")
+                         else:
+                             print("Subject not under threat!")
+                            
+                         t0 = time.time() ##### LINHA Nº3
+                    
+                  
                                 
             ##################################################################################  
             
             
                     for face in faces:
-            
+                        
+
+                            
                         landmarks = predictor(gray, face)
                         left_eye_ratio = get_blinking_ratio([36, 37, 38, 39, 40, 41], landmarks)
                         right_eye_ratio = get_blinking_ratio([42, 43, 44, 45, 46, 47], landmarks)
@@ -274,12 +281,6 @@ while True:
         TelaInicial = Inicio();
 
     
-# with open("output.txt", "w") as txt_file:
-#     for line in encodeList:
-#         txt_file.write(" ".join(line) + "\n")
-
-# with open('test.npy', 'wb') as f:
-#     np.save(f, encodeList[1])
 TelaInicial.close()
 
 
