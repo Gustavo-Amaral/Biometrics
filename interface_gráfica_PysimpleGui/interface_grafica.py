@@ -17,7 +17,10 @@ from fer import FER
 
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 detector = dlib.get_frontal_face_detector()
+
 img_counter = 0
+
+w, h = sg.Window.get_screen_size()
 
 with open("subject_files.pkl",'rb') as f:
     encodeList = pickle.load(f)
@@ -66,9 +69,10 @@ def updateEncodings(encode):
 class Inicio:
     def __init__(self):
         #layout
-        self.layout = [[sg.Button('Registar'), sg.Button('Entrar'), sg.Button('Cancel') ]]
+        self.layout = [[sg.Text("Sistema de Segurança - Reconhecimento Facial",font=("Consolas",40))],
+                       [sg.Button('Registar',font=("Consolas",30)), sg.Button('Entrar',font=("Consolas",30)), sg.Button('Cancel',font=("Consolas",30)) ]]
         #janela
-        self.janela = sg.Window("Tela Inicial").layout(self.layout)
+        self.janela = sg.Window("Sistema de Segurança").layout(self.layout)
         #extrair os dados da tela
         self.button, self.values = self.janela.read()
 
@@ -79,8 +83,8 @@ class Inicio:
 class Registar:
     def __init__(self):
         #layout
-        self.layout = [[sg.Text('Nome'),sg.Input(key='nome')],
-                       [sg.Button('Continuar'), sg.Button('Cancel')]]
+        self.layout = [[sg.Text('Nome',font=("Consolas",30)),sg.Input(key='nome',font=("Consolas",30))],
+                       [sg.Button('Continuar',font=("Consolas",30)), sg.Button('Cancel',font=("Consolas",30))]]
         #janela
         self.janela = sg.Window("Registar").layout(self.layout)
         #extrair os dados da tela
@@ -93,8 +97,8 @@ class Registar:
 class Entrar:
     def __init__(self):
         #layout
-        self.layout = [[sg.Text('Nome'),sg.Input(key='nome')],
-                       [sg.Button('Continuar'), sg.Button('Cancel')]]
+        self.layout = [[sg.Text('Nome',font=("Consolas",30)),sg.Input(key='nome',font=("Consolas",30))],
+                       [sg.Button('Continuar',font=("Consolas",30)), sg.Button('Cancel',font=("Consolas",30))]]
         #janela
         self.janela = sg.Window("Entrar").layout(self.layout)
         #extrair os dados da tela
@@ -207,19 +211,19 @@ while True:
   #####################################  EMOTION DETECTOR ALGORITHM  ############################################## 
                     if ((time.time()-t0) > 5): ##### LINHA Nº2
                       
-   # CODIGO LENTO, PROCURAR SOLUÇÃO PARA QUE ESTA PARTE DO CÓDIGO NAO FIQUE CORRENDO CONSTANTEMENTE #
+    # CODIGO LENTO, PROCURAR SOLUÇÃO PARA QUE ESTA PARTE DO CÓDIGO NAO FIQUE CORRENDO CONSTANTEMENTE #
                     
-                         detect = FER(mtcnn=True)
-                         emotions = detect.detect_emotions(frame)
-                         # print(detect.detect_emotions(frame))
-                         if(emotions[0]["emotions"]["fear"] >= 0.35):
-                             print("Subject maybe under threat - Warning For Emergency situation!")
-                         elif(emotions[0]["emotions"]["angry"] >= 0.35):
-                             print("Subject possibly highly stressed - You should relax!")
-                         else:
-                             print("Subject not under threat!")
+                          detect = FER(mtcnn=True)
+                          emotions = detect.detect_emotions(frame)
+                          # print(detect.detect_emotions(frame))
+                          if(emotions[0]["emotions"]["fear"] >= 0.35):
+                              print("Subject maybe under threat - Warning For Emergency situation!")
+                          elif(emotions[0]["emotions"]["angry"] >= 0.35):
+                              print("Subject possibly highly stressed - You should relax!")
+                          else:
+                              print("Subject not under threat!")
                             
-                         t0 = time.time() ##### LINHA Nº3
+                          t0 = time.time() ##### LINHA Nº3
                     
                   
                                 
@@ -258,17 +262,17 @@ while True:
                                 matches = fr.compare_faces(listOfValues, encondeFace)
                                 faceDist = fr.face_distance(listOfValues, encondeFace)
                                 matchIndex = np.argmin(faceDist)
-                                print(np.amin(faceDist))
 
                          
                                 
                                 if np.amin(faceDist) < 0.5:
                                     if (matches[matchIndex]) and (nome == listOfKeys[matchIndex].upper()):
-                                        print( nome)
+                                        confirmation = messagebox.showinfo("", f'{nome}')
                                     else:
-                                       print("Not Matching. Access denied!") 
+                                        confirmation = messagebox.showinfo("", "Not Matching. Access denied!")
+                                       # print("Not Matching. Access denied!") 
                                 else:
-                                    print("Desconhecido. Acesso negado!")
+                                    confirmation = messagebox.showinfo("", "Desconhecido. Acesso negado!")
                         
                                 s_out = True
     
